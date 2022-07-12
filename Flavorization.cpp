@@ -44,9 +44,11 @@ QString Flavorization::getTitle() const
 	} else {
 		if(isHeir) return QStringLiteral("%1_heir_%2_%3_%4").arg(tierToHolder(tier),
 																 flagsToName(governments),
-																 isFemale ? QStringLiteral("female") : QStringLiteral("male"),name); // count_feudal_female_hungarian
-		else return QStringLiteral("%1_%2_%3_%4").arg(tierToHolder(tier),
-														   flagsToName(governments),														   isFemale ? QStringLiteral("female") : QStringLiteral("male"),name); // count_feudal_female_hungarian
+																 isFemale ? QStringLiteral("female") : QStringLiteral("male"),name);
+		else if(tier == PRINCE) return QStringLiteral("%1_%2_%3_%4_independent").arg(tierToHolder(DUCHY), flagsToName(governments),
+								isFemale ? QStringLiteral("female") : QStringLiteral("male"),name);
+		else return QStringLiteral("%1_%2_%3_%4").arg(tierToHolder(tier), flagsToName(governments),
+								isFemale ? QStringLiteral("female") : QStringLiteral("male"),name);
 	}
 }
 
@@ -64,12 +66,13 @@ QString Flavorization::getTitle() const
 Flavorization::Flavorization(const QStringList& tags, const QString& str)
 {
 	faulty = false;
-	priorityOffset = 0;
+	priorityOffset = 3;
 	this->isHeir = false;
 	if(tags.contains(QStringLiteral("of"))) {
 		this->isTitle = true;
 		if(tags.contains(QStringLiteral("barony"))) this->tier = BARONY;
 		else if(tags.contains(QStringLiteral("county"))) this->tier = COUNTY;
+		else if(tags.contains(QStringLiteral("independent"))) this->tier = PRINCE;
 		else if(tags.contains(QStringLiteral("duchy"))) this->tier = DUCHY;
 		else if(tags.contains(QStringLiteral("kingdom"))) this->tier = KINGDOM;
 		else if(tags.contains(QStringLiteral("empire"))) this->tier = EMPIRE;
@@ -78,6 +81,7 @@ Flavorization::Flavorization(const QStringList& tags, const QString& str)
 		this->isTitle = false;
 		if(tags.contains(QStringLiteral("baron"))) this->tier = BARONY;
 		else if(tags.contains(QStringLiteral("count"))) this->tier = COUNTY;
+		else if(tags.contains(QStringLiteral("independent"))) this->tier = PRINCE;
 		else if(tags.contains(QStringLiteral("duke"))) this->tier = DUCHY;
 		else if(tags.contains(QStringLiteral("king"))) this->tier = KINGDOM;
 		else if(tags.contains(QStringLiteral("emperor"))) this->tier = EMPIRE;

@@ -10,7 +10,6 @@
 
 const QMap<QString,QString> replacements = {
 	{ QStringLiteral("bohemian"), QStringLiteral("czech") },
-	{ QStringLiteral("bohemian"), QStringLiteral("czech") },
 	{ QStringLiteral("castillan"), QStringLiteral("castilian") },
 	{ QStringLiteral("cumbric"), QStringLiteral("cumbrian") },
 	{ QStringLiteral("khwarezmi"), QStringLiteral("khwarezmian") },
@@ -19,10 +18,11 @@ const QMap<QString,QString> replacements = {
 	{ QStringLiteral("romanian"), QStringLiteral("vlach") },
 	{ QStringLiteral("icelandic"), QStringLiteral("norse") },
 	{ QStringLiteral("frankish"), QStringLiteral("french") },
-	{ QStringLiteral("lowfrankish"), QStringLiteral("frankish") },
+	{ QStringLiteral("oldfrankish"), QStringLiteral("frankish") },
 	{ QStringLiteral("saxon"), QStringLiteral("anglo_saxon") },
 	{ QStringLiteral("lowsaxon"), QStringLiteral("saxon") },
-	{ QStringLiteral("caucasianavar"), QStringLiteral("caucasian_avar") }
+	{ QStringLiteral("caucasianavar"), QStringLiteral("caucasian_avar") },
+	{ QStringLiteral("sanhaja"), QStringLiteral("butr") }
 	//
 	// ligurian - cisalpine
 };
@@ -49,6 +49,7 @@ void createTitles(const TitleMap& titlemap)
 		it.outputLocalization(localizationStream);
 		localizationStream << '\n';
 	}
+	localizationStream << " caliph:0 \"\u004b\u0068\u0061\u006c\u0069\u0066\u0061\u0068\"\n";
 	localizationStream.flush();
 	definitionsStream.flush();
 	localization_file.flush();
@@ -63,17 +64,24 @@ TitleMap generateTitlesFromStr(QTextStream& stream)
 	TitleMap obj;
 	while(stream.readLineInto(&str))
 	{
+		str = str.replace(QStringLiteral("\u008e\u0075\u0070\u0061\u006e"),QStringLiteral("\u017d\u0075\u0070\u0061\u006e"));
 		if(str.startsWith('#')) continue;
 		QStringList comma_separated = str.split(';',Qt::SkipEmptyParts);
 		if(comma_separated.size() < 2) continue;
+		// tengri_pagan
+		comma_separated[0] = comma_separated[0].replace(QStringLiteral("west_african_pagan"),QStringLiteral("africanpagan"));
+		comma_separated[0] = comma_separated[0].replace(QStringLiteral("tengri_pagan"),QStringLiteral("tengri"));
+		comma_separated[0] = comma_separated[0].replace(QStringLiteral("old_frankish"),QStringLiteral("oldfrankish"));
 		comma_separated[0] = comma_separated[0].replace(QStringLiteral("low_frankish"),QStringLiteral("lowfrankish"));
 		comma_separated[0] = comma_separated[0].replace(QStringLiteral("low_saxon"),QStringLiteral("lowsaxon"));
 		comma_separated[0] = comma_separated[0].replace(QStringLiteral("caucasian_avar"),QStringLiteral("caucasianavar"));
+		comma_separated[1] = comma_separated[1].replace(QChar('?'),QChar(0x0151));
 		QStringList tags = comma_separated[0].split('_',Qt::SkipEmptyParts);
 		if(tags.contains(QStringLiteral("gothic"))) continue;
 		if(tags.contains(QStringLiteral("norse"))) continue;
 		if(tags.contains(QStringLiteral("temple"))) continue;
 		if(tags.contains(QStringLiteral("consort"))) continue;
+		if(tags.contains(QStringLiteral("group"))) continue;
 		auto replaceIt = replacements.find(tags.back());
 		if(replaceIt != std::end(replacements)) tags.back() = replaceIt.value();
 		// Debugging purposes
@@ -93,6 +101,20 @@ TitleMap generateTitlesFromStr(QTextStream& stream)
 		if(flav.name_lists.contains(QStringLiteral("name_list_saxon"))) flav.name_lists.push_back(QStringLiteral("name_list_old_saxon"));
 		if(flav.name_lists.contains(QStringLiteral("name_list_czech"))) flav.name_lists.push_back(QStringLiteral("name_list_slovien"));
 		if(flav.name_lists.contains(QStringLiteral("name_list_ligurian"))) flav.name_lists.push_back(QStringLiteral("name_list_cisalpine"));
+		if(flav.name_lists.contains(QStringLiteral("name_list_butr")))
+		{
+			flav.name_lists.push_back(QStringLiteral("name_list_baranis"));
+			flav.name_lists.push_back(QStringLiteral("name_list_zaghawa"));
+		}
+		if(flav.name_lists.contains(QStringLiteral("name_list_arabic"))) {
+			flav.name_lists.clear();
+			flav.name_lists.push_back(QStringLiteral("name_list_bedouin"));
+			flav.name_lists.push_back(QStringLiteral("name_list_levantine"));
+			flav.name_lists.push_back(QStringLiteral("name_list_egyptian"));
+			flav.name_lists.push_back(QStringLiteral("name_list_maghrebi"));
+			flav.name_lists.push_back(QStringLiteral("name_list_andalusian"));
+			flav.name_lists.push_back(QStringLiteral("name_list_yemeni"));
+		}
 		if(flav.name_lists.contains(QStringLiteral("name_list_polish"))) {
 			flav.name_lists.push_back(QStringLiteral("name_list_pommeranian"));
 			flav.name_lists.push_back(QStringLiteral("name_list_polabian"));
@@ -122,7 +144,41 @@ TitleMap generateTitlesFromStr(QTextStream& stream)
 			flav.name_lists.clear();
 			flav.priorityOffset += 1;
 		}
-		obj.push_back(flav);
+		if(flav.name_lists.contains(QStringLiteral("name_list_tengri"))) {
+			flav.religions.push_back(QStringLiteral("tengrism_religion"));
+			flav.name_lists.clear();
+		}
+		if(flav.name_lists.contains(QStringLiteral("name_list_turkic"))) {
+			flav.heritages.push_back(QStringLiteral("heritage_turkic"));
+			flav.priorityOffset -= 4;
+			flav.name_lists.clear();
+		}
+		if(flav.name_lists.contains(QStringLiteral("name_list_africanpagan"))) {
+			flav.religions.push_back(QStringLiteral("west_african_bori_religion"));
+			flav.religions.push_back(QStringLiteral("west_african_orisha_religion"));
+			flav.religions.push_back(QStringLiteral("west_african_religion"));
+			flav.name_lists.clear();
+		}
+		if(!flav.faulty) obj.push_back(flav);
+	}
+	for(auto& it : obj)
+	{
+		if(it.name_lists.contains(QStringLiteral("name_list_czech")) && it.tier == COUNTY)
+		{
+			it.name_lists.removeOne(QStringLiteral("name_list_slovien"));
+		}
+		if(it.name_lists.contains(QStringLiteral("name_list_croatian")) && it.tier == COUNTY)
+		{
+			it.name_lists.push_back(QStringLiteral("name_list_slovien"));
+		}
+		if(it.name_lists.contains(QStringLiteral("name_list_hungarian")))
+		{
+				if(it.tier == KINGDOM || it.tier == DUCHY)
+				{
+					if(it.governments & FLAG_FEUDAL) it.governments &= ~(FLAG_CLAN | FLAG_TRIBAL);
+					if(it.governments & FLAG_TRIBAL) it.governments |= FLAG_CLAN;
+				}
+		}
 	}
 	return obj;
 }
