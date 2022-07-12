@@ -19,7 +19,7 @@ const QMap<QString,QString> replacements = {
 	{ QStringLiteral("romanian"), QStringLiteral("vlach") },
 	{ QStringLiteral("icelandic"), QStringLiteral("norse") },
 	{ QStringLiteral("frankish"), QStringLiteral("french") },
-	{ QStringLiteral("low_frankish"), QStringLiteral("frankish") },
+	{ QStringLiteral("lowfrankish"), QStringLiteral("frankish") },
 	{ QStringLiteral("saxon"), QStringLiteral("anglo_saxon") },
 	{ QStringLiteral("lowsaxon"), QStringLiteral("saxon") },
 	{ QStringLiteral("caucasianavar"), QStringLiteral("caucasian_avar") }
@@ -66,6 +66,7 @@ TitleMap generateTitlesFromStr(QTextStream& stream)
 		if(str.startsWith('#')) continue;
 		QStringList comma_separated = str.split(';',Qt::SkipEmptyParts);
 		if(comma_separated.size() < 2) continue;
+		comma_separated[0] = comma_separated[0].replace(QStringLiteral("low_frankish"),QStringLiteral("lowfrankish"));
 		comma_separated[0] = comma_separated[0].replace(QStringLiteral("low_saxon"),QStringLiteral("lowsaxon"));
 		comma_separated[0] = comma_separated[0].replace(QStringLiteral("caucasian_avar"),QStringLiteral("caucasianavar"));
 		QStringList tags = comma_separated[0].split('_',Qt::SkipEmptyParts);
@@ -96,6 +97,12 @@ TitleMap generateTitlesFromStr(QTextStream& stream)
 			flav.name_lists.push_back(QStringLiteral("name_list_pommeranian"));
 			flav.name_lists.push_back(QStringLiteral("name_list_polabian"));
 		}
+		if(flav.name_lists.contains(QStringLiteral("name_list_finnish"))) {
+			flav.name_lists.push_back(QStringLiteral("name_list_sami"));
+			flav.name_lists.push_back(QStringLiteral("name_list_estonian"));
+			flav.name_lists.push_back(QStringLiteral("name_list_karelian"));
+			flav.name_lists.push_back(QStringLiteral("name_list_vepsian"));
+		}
 		if(flav.name_lists.contains(QStringLiteral("name_list_mongol"))) {
 			flav.name_lists.push_back(QStringLiteral("name_list_buryat"));
 			flav.name_lists.push_back(QStringLiteral("name_list_oirat"));
@@ -113,7 +120,7 @@ TitleMap generateTitlesFromStr(QTextStream& stream)
 			flav.heritages.push_back(QStringLiteral("heritage_iranian"));
 			flav.religions.push_back(QStringLiteral("islam_religion"));
 			flav.name_lists.clear();
-			flav.priorityOffset = 1;
+			flav.priorityOffset += 1;
 		}
 		obj.push_back(flav);
 	}

@@ -91,8 +91,11 @@ Flavorization::Flavorization(const QStringList& tags, const QString& str)
 	else this->isFemale = false;
 	this->governments = 0;
 	if(tags.contains(QStringLiteral("city"))) this->governments |= FLAG_REPUBLIC;
-	if(tags.contains(QStringLiteral("tribal"))) this->governments |= FLAG_TRIBAL;
-	if(tags.contains(QStringLiteral("nomadic"))) this->governments |= FLAG_TRIBAL;
+	if(tags.contains(QStringLiteral("tribal")) || tags.contains(QStringLiteral("nomadic")))
+	{
+		this->governments |= FLAG_TRIBAL;
+		++priorityOffset;
+	}
 	if(!this->governments) this->governments = FLAG_CLAN | FLAG_FEUDAL;
 	if(!(this->governments & FLAG_REPUBLIC) && (this->tier == KINGDOM || this->tier == EMPIRE)) this->governments |= FLAG_TRIBAL;
 	this->locString = str;
