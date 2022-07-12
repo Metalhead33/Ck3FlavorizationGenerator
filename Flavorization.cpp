@@ -144,5 +144,5 @@ void Flavorization::outputDefinition(QTextStream& stream) const
 void Flavorization::outputLocalization(QTextStream& stream) const
 {
 	if(faulty) return;
-	stream << ' ' << getTitle() << ":0 \"" << locString << '\n';
+	stream << ' ' << getTitle() << ":0 \"" << locString << '\"';
 }
