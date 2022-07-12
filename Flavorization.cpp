@@ -32,8 +32,8 @@ static const QString TRIBAL_GOV = QStringLiteral("tribal_government");
 static QString flagsToName(int governments)
 {
 	if(governments == FLAG_REPUBLIC) return REPUBLIC;
-	else if(governments == FLAG_TRIBAL) return TRIBAL;
-	else return FEUDAL;
+	else if(governments & FLAG_FEUDAL) return FEUDAL;
+	else return TRIBAL;
 }
 
 QString Flavorization::getTitle() const
