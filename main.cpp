@@ -95,6 +95,7 @@ TitleMap generateTitlesFromStr(QTextStream& stream)
 		if(tags.contains(QStringLiteral("temple"))) continue;
 		if(tags.contains(QStringLiteral("consort"))) continue;
 		if(tags.contains(QStringLiteral("group"))) continue;
+		if(tags.contains(QStringLiteral("vice"))) continue;
 		auto replaceIt = replacements.find(tags.back());
 		if(replaceIt != std::end(replacements)) tags.back() = replaceIt.value();
 		// Debugging purposes
