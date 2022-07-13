@@ -9,7 +9,7 @@ enum Tier {
 	DUCHY = 27,
 	KINGDOM = 47,
 	EMPIRE = 102,
-	PRINCE = 48
+	PRINCE = 46
 };
 static const int FLAG_FEUDAL = 1;
 static const int FLAG_TRIBAL = 2;

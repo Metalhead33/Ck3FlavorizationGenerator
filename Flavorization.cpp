@@ -118,7 +118,7 @@ void Flavorization::outputDefinition(QTextStream& stream) const
 		stream << "special = "<< (isHeir ? "ruler_child" : "holder") << "\n\t";
 	}
 	stream << "tier = "<< tierToTitle(tier) << "\n\t";
-	stream << "priority = "<< (isHeir ? int(tier)-4 : int(tier))+priorityOffset <<"\n\t";
+	stream << "priority = "<< (isHeir ? int(tier)-10 : int(tier))+priorityOffset <<"\n\t";
 	stream << "governments = { ";
 	if(governments & FLAG_FEUDAL) stream << "feudal_government ";
 	if(governments & FLAG_TRIBAL) stream << "tribal_government ";

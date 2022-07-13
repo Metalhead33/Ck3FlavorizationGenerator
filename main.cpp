@@ -64,7 +64,18 @@ TitleMap generateTitlesFromStr(QTextStream& stream)
 	TitleMap obj;
 	while(stream.readLineInto(&str))
 	{
+		// Kuninggaktis
+		str = str.replace(QStringLiteral("\u004b\u0075\u006e\u0069\u0067\u0061\u0069\u006b\u009a\u0074\u0069\u0065\u006e\u0065"),QStringLiteral("\u004b\u0075\u006e\u0069\u0067\u0061\u0069\u006b\u0161\u0074\u0069\u0065\u006e\u0117"));
+		str = str.replace(QStringLiteral("\u004b\u0075\u006e\u0069\u0067\u0061\u0069\u006b\u009a\u0074\u0069\u0073"),QStringLiteral("\u004b\u0075\u006e\u0069\u0067\u0061\u0069\u006b\u0161\u0074\u0069\u0073"));
+		// Zupan
 		str = str.replace(QStringLiteral("\u008e\u0075\u0070\u0061\u006e"),QStringLiteral("\u017d\u0075\u0070\u0061\u006e"));
+		// Ksiaze
+		str = str.replace(QStringLiteral("Ksiaze"),QStringLiteral("\u004b\u0073\u0069\u0105\u017c\u0119"));
+		str = str.replace(QStringLiteral("Ksiezna"),QStringLiteral("\u004b\u0073\u0069\u0119\u017c\u006e\u0061"));
+		str = str.replace(QStringLiteral("Ksiestwo"),QStringLiteral("\u004b\u0073\u0069\u0119\u0073\u0074\u0077\u006f"));
+		str = str.replace(QStringLiteral("Plemie of"),QStringLiteral("\u0050\u006c\u0065\u006d\u0069\u0119"));
+		// Hungarian Long Oe
+		str = str.replace(QChar('?'),QChar(0x0151));
 		if(str.startsWith('#')) continue;
 		QStringList comma_separated = str.split(';',Qt::SkipEmptyParts);
 		if(comma_separated.size() < 2) continue;
